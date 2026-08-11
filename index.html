@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JEX Gaming — Anahtar Teslim Bahis Yazılımı</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root{
+    --bg-0:#050706;
+    --bg-1:#080b09;
+    --panel:#0c1210;
+    --panel-2:#0f1613;
+    --green-500:#4CD964;
+    --green-400:#7fe895;
+    --green-700:#1e8f3c;
+    --gold:#d9c98a;
+    --silver:#c9d2ce;
+    --white:#f3f6f4;
+    --line:rgba(255,255,255,0.08);
+    --line-soft:rgba(255,255,255,0.05);
+    --nav-h:76px;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth; scroll-padding-top: calc(var(--nav-h) + 18px);}
+  body{
+    background:var(--bg-0);
+    color:var(--white);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    position:relative;
+  }
+  /* film-grain texture for a premium, non-flat feel */
+  body::before{
+    content:'';
+    position:fixed; inset:0; z-index:2000; pointer-events:none;
+    opacity:0.035; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  img{max-width:100%; display:block;}
+  a{color:inherit; text-decoration:none;}
+  ul{list-style:none;}
+
+  h1,h2,h3{ font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:0.01em; }
+
+  .eyebrow{
+    font-family:'Oswald',sans-serif;
+    font-weight:600;
+    font-size:0.72rem;
+    letter-spacing:0.4em;
+    text-transform:uppercase;
+    color:var(--green-500);
+    display:inline-flex; align-items:center; gap:0.6rem;
+  }
+  .eyebrow::before{
+    content:''; width:22px; height:1px;
+    background:linear-gradient(90deg, transparent, var(--green-500));
+  }
+
+  section{ position:relative; }
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 6vw; }
+
+  /* reveal-on-scroll */
+  .reveal{ opacity:0; transform:translateY(24px); transition:opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1); }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  /* ---------- NAV ---------- */
+  header.nav{
+    position:sticky; top:0; z-index:100;
+    height:var(--nav-h);
+    display:flex; align-items:center;
+    background:rgba(4,6,5,0.72);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border-bottom:1px solid var(--line-soft);
+  }
+  header.nav::before{
+    content:''; position:absolute; top:0; left:0; right:0; height:1px;
+    background:linear-gradient(90deg, transparent, rgba(76,217,100,0.6), transparent);
+  }
+  .nav-inner{
+    width:100%; max-width:1320px; margin:0 auto; padding:0 5vw;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:1.5rem;
+  }
+  .brand{ display:flex; align-items:center; gap:0.65rem; }
+  .brand img{ height:32px; width:auto; filter:drop-shadow(0 0 10px rgba(76,217,100,0.35)); }
+  .brand span{
+    font-family:'Oswald',sans-serif; font-weight:700; font-size:1.02rem;
+    letter-spacing:0.08em;
+  }
+  .brand span em{ color:var(--green-500); font-style:normal; }
+
+  nav.links{ display:flex; align-items:center; gap:2.2rem; }
+  nav.links > a{
+    font-family:'Oswald',sans-serif; font-size:0.78rem; font-weight:500;
+    letter-spacing:0.08em; text-transform:uppercase; color:var(--silver);
+    padding:0.3rem 0; position:relative; transition:color .2s;
+  }
+  nav.links > a:hover{ color:var(--white); }
+  nav.links > a::after{
+    content:''; position:absolute; left:0; right:0; bottom:-2px; height:1px;
+    background:var(--green-500); transform:scaleX(0); transform-origin:left;
+    transition:transform .3s cubic-bezier(.16,1,.3,1);
+  }
+  nav.links > a:hover::after{ transform:scaleX(1); }
+
+  .has-mega{ position:relative; }
+  .has-mega:hover .mega{ opacity:1; visibility:visible; transform:translateY(0); }
+  .mega{
+    position:fixed;
+    left:0; right:0;
+    top:var(--nav-h);
+    background:rgba(5,8,6,0.98);
+    backdrop-filter: blur(20px);
+    border-bottom:1px solid var(--line);
+    box-shadow:0 30px 50px -20px rgba(0,0,0,0.7);
+    padding:2.4rem 0 2.8rem;
+    opacity:0; visibility:hidden; transform:translateY(-10px);
+    transition:opacity .25s, transform .25s, visibility .25s;
+  }
+  .mega::before{
+    content:''; position:absolute; top:0; left:0; right:0; height:1px;
+    background:linear-gradient(90deg, transparent, rgba(76,217,100,0.5), transparent);
+  }
+  .mega-inner{
+    max-width:1180px; margin:0 auto; padding:0 6vw;
+    display:grid; grid-template-columns:repeat(4,1fr); gap:0.3rem 2.2rem;
+  }
+  .mega-inner a{
+    display:flex; align-items:baseline; gap:0.55rem;
+    font-size:0.85rem; color:var(--silver);
+    padding:0.55rem 0; border-bottom:1px solid var(--line-soft);
+    transition:color .2s, padding-left .2s;
+  }
+  .mega-inner a:hover{ color:var(--green-400); padding-left:0.3rem; }
+  .mega-inner a::before{ content:'—'; color:var(--green-700); font-size:0.75rem; }
+
+  .cta-btn{
+    font-family:'Oswald',sans-serif; font-weight:600; font-size:0.78rem;
+    letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--bg-0);
+    background:linear-gradient(135deg, var(--green-400), var(--green-500) 60%, var(--green-700));
+    padding:0.75rem 1.5rem; border-radius:3px;
+    white-space:nowrap;
+    box-shadow:0 8px 24px -8px rgba(76,217,100,0.55);
+    transition:box-shadow .25s, transform .25s, filter .25s;
+  }
+  .cta-btn:hover{ transform:translateY(-2px); box-shadow:0 14px 32px -10px rgba(76,217,100,0.7); filter:brightness(1.06); }
+
+  .burger{ display:none; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:7.5rem 0 5.5rem;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:'';
+    position:absolute; inset:0; z-index:0;
+    background:
+      radial-gradient(ellipse 55% 55% at 85% 5%, rgba(76,217,100,0.16), transparent 60%),
+      radial-gradient(ellipse 45% 40% at 5% 95%, rgba(76,217,100,0.09), transparent 65%),
+      linear-gradient(180deg, var(--bg-1), var(--bg-0) 70%);
+  }
+  .hero::after{
+    content:'';
+    position:absolute; inset:0; z-index:0; opacity:0.35;
+    background-image:
+      linear-gradient(var(--line-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size:56px 56px;
+    -webkit-mask-image: radial-gradient(ellipse 70% 55% at 50% 30%, black, transparent 75%);
+            mask-image: radial-gradient(ellipse 70% 55% at 50% 30%, black, transparent 75%);
+  }
+  .orb{
+    position:absolute; z-index:0; border-radius:50%; filter:blur(60px);
+    background:radial-gradient(circle, rgba(76,217,100,0.35), transparent 70%);
+    animation:drift 14s ease-in-out infinite;
+  }
+  .orb.o1{ width:340px; height:340px; top:-80px; right:8%; }
+  .orb.o2{ width:220px; height:220px; bottom:-40px; left:2%; animation-delay:-6s; }
+  @keyframes drift{
+    0%,100%{ transform:translate(0,0) scale(1); }
+    50%{ transform:translate(20px,-24px) scale(1.08); }
+  }
+
+  .hero .wrap{
+    position:relative; z-index:1;
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:3.8rem; align-items:center;
+  }
+  .hero-badge{
+    display:inline-flex; align-items:center; gap:0.55rem;
+    font-family:'Oswald',sans-serif; font-size:0.7rem; font-weight:600;
+    letter-spacing:0.3em; text-transform:uppercase; color:var(--green-500);
+    border:1px solid rgba(76,217,100,0.35); border-radius:999px;
+    padding:0.5rem 1.1rem 0.5rem 0.9rem; margin-bottom:1.8rem;
+    background:rgba(76,217,100,0.05);
+  }
+  .hero h1{
+    font-size:clamp(2.6rem, 5.2vw, 4.4rem);
+    line-height:1.0; font-weight:700;
+  }
+  .hero h1 .grad{
+    background:linear-gradient(100deg, var(--green-400), var(--green-500) 45%, #a8f0b6 60%, var(--green-500));
+    background-size:200% auto;
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:sheen 6s linear infinite;
+  }
+  @keyframes sheen{
+    0%{ background-position:0% center; }
+    100%{ background-position:200% center; }
+  }
+  .hero p.lead{
+    margin-top:1.5rem; font-size:1.08rem; color:var(--silver); max-width:480px; font-weight:300;
+  }
+  .hero p.lead strong{ color:var(--white); font-weight:600; }
+
+  .hero-actions{ margin-top:2.4rem; display:flex; gap:1rem; flex-wrap:wrap; }
+  .btn-outline{
+    font-family:'Oswald',sans-serif; font-weight:600; font-size:0.78rem;
+    letter-spacing:0.08em; text-transform:uppercase;
+    border:1px solid var(--line); color:var(--white);
+    padding:0.78rem 1.6rem; border-radius:3px;
+    transition:border-color .25s, background .25s, transform .25s;
+  }
+  .btn-outline:hover{ border-color:var(--green-500); background:rgba(76,217,100,0.06); transform:translateY(-2px); }
+
+  .badge-row{
+    margin-top:3rem; display:flex; gap:1.6rem; flex-wrap:wrap;
+  }
+  .badge-item{
+    display:flex; align-items:center; gap:0.7rem;
+    border:1px solid var(--line); border-radius:10px;
+    padding:0.85rem 1.15rem; background:rgba(255,255,255,0.015);
+    flex:1 1 160px;
+    transition:border-color .25s, background .25s, transform .25s;
+  }
+  .badge-item:hover{ border-color:rgba(76,217,100,0.35); background:rgba(76,217,100,0.04); transform:translateY(-2px); }
+  .badge-item .ic{
+    width:36px; height:36px; border-radius:9px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(135deg, rgba(76,217,100,0.18), rgba(76,217,100,0.04));
+    border:1px solid rgba(76,217,100,0.2);
+    color:var(--green-500);
+    font-size:1.02rem;
+  }
+  .badge-item .tt{ font-family:'Oswald',sans-serif; font-size:0.76rem; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; }
+  .badge-item .sub{ font-size:0.71rem; color:rgba(255,255,255,0.45); margin-top:0.15rem; }
+
+  .hero-visual{
+    position:relative;
+    border-radius:20px; overflow:hidden;
+    border:1px solid var(--line);
+    box-shadow:0 40px 80px -24px rgba(0,0,0,0.65), 0 0 0 1px rgba(76,217,100,0.06);
+  }
+  .hero-visual img{ width:100%; height:auto; display:block; }
+  .hero-visual .glow-ring{
+    position:absolute; inset:0; border-radius:20px; pointer-events:none;
+    box-shadow: inset 0 0 80px rgba(76,217,100,0.14);
+  }
+  .hero-visual .corner-tag{
+    position:absolute; bottom:16px; left:16px; z-index:2;
+    display:flex; align-items:center; gap:0.5rem;
+    background:rgba(5,8,6,0.75); backdrop-filter:blur(8px);
+    border:1px solid rgba(76,217,100,0.3); border-radius:999px;
+    padding:0.4rem 0.85rem;
+    font-family:'Oswald',sans-serif; font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--green-400);
+  }
+  .corner-tag .dot{ width:6px; height:6px; border-radius:50%; background:var(--green-500); animation:pulse 1.8s ease-out infinite; }
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(76,217,100,0.55); }
+    70%{ box-shadow:0 0 0 9px rgba(76,217,100,0); }
+    100%{ box-shadow:0 0 0 0 rgba(76,217,100,0); }
+  }
+
+  /* ---------- SECTION HEADS ---------- */
+  .sec-head{ max-width:640px; margin-bottom:3.2rem; }
+  .sec-head h2{
+    font-size:clamp(1.8rem,3vw,2.4rem); font-weight:700; margin-top:0.8rem;
+  }
+  .sec-head p{ margin-top:1rem; color:var(--silver); font-weight:300; }
+
+  /* ---------- FEATURES ---------- */
+  .features{ padding:6.5rem 0 3.5rem; border-top:1px solid var(--line-soft); }
+  .feat-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:1.15rem;
+  }
+  .feat-card{
+    scroll-margin-top: calc(var(--nav-h) + 18px);
+    position:relative;
+    background:linear-gradient(160deg, var(--panel), var(--bg-1));
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:1.9rem 1.7rem;
+    overflow:hidden;
+    transition:border-color .3s, transform .3s, box-shadow .3s;
+  }
+  .feat-card::before{
+    content:'';
+    position:absolute; inset:0; border-radius:14px; padding:1px;
+    background:linear-gradient(140deg, rgba(76,217,100,0), rgba(76,217,100,0.35), rgba(76,217,100,0));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    opacity:0; transition:opacity .3s;
+    pointer-events:none;
+  }
+  .feat-card:hover{
+    border-color:rgba(76,217,100,0.3);
+    transform:translateY(-4px);
+    box-shadow:0 20px 40px -18px rgba(0,0,0,0.6);
+  }
+  .feat-card:hover::before{ opacity:1; }
+  .feat-card .top-row{ display:flex; align-items:center; justify-content:space-between; }
+  .feat-card .ic-badge{
+    width:44px; height:44px; border-radius:11px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.25rem;
+    background:linear-gradient(135deg, rgba(76,217,100,0.16), rgba(76,217,100,0.02));
+    border:1px solid rgba(76,217,100,0.22);
+  }
+  .feat-card .num{
+    font-family:'Oswald',sans-serif; font-size:0.7rem; font-weight:600;
+    color:rgba(255,255,255,0.25); letter-spacing:0.1em;
+  }
+  .feat-card h3{
+    margin-top:1.1rem; font-size:1.04rem; font-weight:600; letter-spacing:0.01em;
+  }
+  .feat-card p{
+    margin-top:0.65rem; font-size:0.87rem; color:rgba(255,255,255,0.55); font-weight:300;
+  }
+
+  /* ---------- THEME / VALUE PROPS ---------- */
+  .theme-sec{
+    padding:6rem 0; border-top:1px solid var(--line-soft);
+    background: radial-gradient(ellipse 60% 100% at 100% 50%, rgba(76,217,100,0.05), transparent);
+  }
+  .theme-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:3.2rem; align-items:start;
+  }
+  .theme-copy h2{ margin-top:0.9rem; font-size:clamp(1.7rem,3vw,2.2rem); font-weight:700; }
+  .theme-copy p{ margin-top:1.2rem; color:var(--silver); font-weight:300; max-width:440px; }
+  .theme-copy p mark{ background:none; color:var(--green-500); font-weight:500; }
+
+  .value-grid{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .value-card{
+    border:1px solid var(--line); border-radius:12px; padding:1.6rem 1.2rem;
+    text-align:center;
+    background:linear-gradient(160deg, rgba(255,255,255,0.02), transparent);
+    transition:border-color .25s, transform .25s;
+  }
+  .value-card:hover{ border-color:rgba(76,217,100,0.35); transform:translateY(-3px); }
+  .value-card .ic{ font-size:1.6rem; color:var(--green-500); margin-bottom:0.7rem; }
+  .value-card .tt{ font-family:'Oswald',sans-serif; font-size:0.78rem; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; }
+
+  /* ---------- LOGO SHOWCASE ---------- */
+  .logo-sec{
+    padding:5.5rem 0; text-align:center; border-top:1px solid var(--line-soft);
+    position:relative;
+  }
+  .logo-sec img{ max-width:360px; margin:0 auto; filter:drop-shadow(0 0 60px rgba(76,217,100,0.22)); }
+
+  /* ---------- STAT STRIP ---------- */
+  .stats{
+    border-top:1px solid var(--line-soft); border-bottom:1px solid var(--line-soft);
+    padding:2.8rem 0;
+  }
+  .stats .wrap{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:1.6rem;
+  }
+  .stat-item{ display:flex; align-items:flex-start; gap:0.95rem; }
+  .stat-item .ic{ font-size:1.35rem; color:var(--green-500); flex-shrink:0; margin-top:0.1rem; }
+  .stat-item .tt{ font-family:'Oswald',sans-serif; font-size:0.85rem; font-weight:600; letter-spacing:0.03em; text-transform:uppercase; }
+  .stat-item .sub{ font-size:0.78rem; color:rgba(255,255,255,0.45); margin-top:0.25rem; font-weight:300; }
+
+  /* ---------- CONTACT ---------- */
+  .contact{ padding:6rem 0; }
+  .contact-box{
+    position:relative; overflow:hidden;
+    border:1px solid rgba(76,217,100,0.3); border-radius:20px;
+    padding:2.8rem 3.2rem;
+    display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap;
+    background: radial-gradient(ellipse 65% 120% at 0% 50%, rgba(76,217,100,0.1), transparent);
+  }
+  .contact-box::before{
+    content:''; position:absolute; top:0; left:0; right:0; height:1px;
+    background:linear-gradient(90deg, transparent, rgba(76,217,100,0.6), transparent);
+  }
+  .contact-box h2{ font-size:clamp(1.5rem,2.6vw,2rem); font-weight:700; }
+  .contact-box h2 mark{ background:none; color:var(--green-500); }
+  .contact-links{ display:flex; gap:1.9rem; flex-wrap:wrap; }
+  .contact-links a{
+    display:flex; align-items:center; gap:0.6rem;
+    font-family:'Oswald',sans-serif; font-size:0.82rem; font-weight:500; letter-spacing:0.02em;
+    color:var(--silver); transition:color .2s, transform .2s;
+  }
+  .contact-links a:hover{ color:var(--green-400); transform:translateY(-2px); }
+  .contact-links .lbl{ display:block; font-size:0.66rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.09em; }
+
+  footer.foot{
+    border-top:1px solid var(--line-soft); padding:2.2rem 0; text-align:center;
+    font-family:'Oswald',sans-serif; font-size:0.68rem; letter-spacing:0.22em;
+    text-transform:uppercase; color:rgba(255,255,255,0.28);
+  }
+
+  :focus-visible{ outline:2px solid var(--green-500); outline-offset:3px; }
+
+  @media (prefers-reduced-motion: reduce){
+    .orb, .hero h1 .grad, .corner-tag .dot{ animation:none; }
+    .reveal{ opacity:1; transform:none; transition:none; }
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:980px){
+    nav.links{ display:none; }
+    .burger{
+      display:flex; width:38px; height:38px; border-radius:8px;
+      border:1px solid var(--line); align-items:center; justify-content:center;
+      color:var(--white); font-size:1.1rem; cursor:pointer;
+    }
+    .hero .wrap{ grid-template-columns:1fr; }
+    .theme-grid{ grid-template-columns:1fr; }
+    .feat-grid{ grid-template-columns:repeat(2,1fr); }
+    .stats .wrap{ grid-template-columns:repeat(2,1fr); }
+  }
+  @media (max-width:600px){
+    .feat-grid{ grid-template-columns:1fr; }
+    .stats .wrap{ grid-template-columns:1fr; }
+    .contact-box{ flex-direction:column; align-items:flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand">
+      <img src="logo.png" alt="JEX Gaming">
+      <span>JEX <em>GAMING</em></span>
+    </a>
+
+    <nav class="links">
+      <a href="#top">Ana Sayfa</a>
+
+      <div class="has-mega">
+        <a href="#ozellikler">Özellikler ▾</a>
+        <div class="mega">
+          <div class="mega-inner">
+            <a href="#f-sports-api">Spor Bahisleri API</a>
+            <a href="#f-casino-api">Casino API</a>
+            <a href="#f-live-casino">Live Casino API</a>
+            <a href="#f-payment">Ödeme Sistemi Entegrasyonları</a>
+            <a href="#f-user-balance">Kullanıcı & Bakiye Yönetimi</a>
+            <a href="#f-bonus">Bonus & Promosyon Sistemi</a>
+            <a href="#f-admin">Detaylı Yönetim Paneli</a>
+            <a href="#f-reports">Detaylı Raporlama Sistemi</a>
+            <a href="#f-lang">Çoklu Dil Desteği</a>
+            <a href="#f-mobile">Mobil Uyumlu Tasarım</a>
+            <a href="#f-theme">İsteğe Özel Tema</a>
+            <a href="#f-anon">Anonim Üye Kaydı</a>
+            <a href="#f-scratch">Kazı Kazan Özellik</a>
+            <a href="#f-opensource">Açık Kaynak Kod</a>
+            <a href="#f-license">Anjouan Gaming Lisans Desteği</a>
+          </div>
+        </div>
+      </div>
+
+      <a href="#neden-jex">Neden JEX</a>
+      <a href="#iletisim">İletişim</a>
+    </nav>
+
+    <a href="https://t.me/jexgaming" target="_blank" rel="noopener" class="cta-btn">Demo İste</a>
+    <div class="burger">☰</div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="orb o1"></div>
+    <div class="orb o2"></div>
+    <div class="wrap">
+      <div>
+        <div class="hero-badge">🚀 Anahtar Teslim</div>
+        <h1>Bahis <span class="grad">Yazılımı</span></h1>
+        <p class="lead">Kendi platformunuzu kurmak için ihtiyacınız olan <strong>tüm altyapı tek pakette.</strong> Spor bahisleri, casino ve canlı casino modüllerini içeren, uçtan uca hazır bir çözüm.</p>
+
+        <div class="hero-actions">
+          <a href="https://t.me/jexgaming" target="_blank" rel="noopener" class="cta-btn">Fiyat Teklifi Al</a>
+          <a href="#ozellikler" class="btn-outline">Özellikleri İncele</a>
+        </div>
+
+        <div class="badge-row">
+          <div class="badge-item">
+            <div class="ic">&lt;/&gt;</div>
+            <div>
+              <div class="tt">Açık Kaynak</div>
+              <div class="sub">Esnek & güvenli</div>
+            </div>
+          </div>
+          <div class="badge-item">
+            <div class="ic">⚡</div>
+            <div>
+              <div class="tt">Hızlı & Performans</div>
+              <div class="sub">Üst düzey altyapı</div>
+            </div>
+          </div>
+          <div class="badge-item">
+            <div class="ic">🛡</div>
+            <div>
+              <div class="tt">Güvenli & Stabil</div>
+              <div class="sub">Profesyonel çözüm</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <img src="logo.png" alt="JEX Gaming platform önizlemesi">
+        <div class="glow-ring"></div>
+        <div class="corner-tag"><span class="dot"></span> Canlı Platform Önizlemesi</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="ozellikler">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Öne Çıkan Özellikler</span>
+        <h2>Platformunuz için gereken her modül</h2>
+        <p>İhtiyacınıza göre özelleştirilebilen anahtar teslim yazılım altyapımız ile projenizi kısa sürede hayata geçirin.</p>
+      </div>
+
+      <div class="feat-grid">
+
+        <div class="feat-card reveal" id="f-sports-api">
+          <div class="top-row"><div class="ic-badge">⚽</div><div class="num">01</div></div>
+          <h3>Spor Bahisleri API</h3>
+          <p>Canlı skor, oran ve geniş spor yelpazesini platformunuza tek entegrasyonla taşıyan bahis altyapısı.</p>
+        </div>
+
+        <div class="feat-card reveal" id="f-casino-api">
+          <div class="top-row"><div class="ic-badge">🎰</div><div class="num">02</div></div>
+          <h3>Casino API</h3>
+          <p>Slot ve masa oyunlarını tek bağlantı üzerinden sunan, geniş oyun kütüphanesine sahip casino altyapısı.</p>
+        </div>
+
+        <div class="feat-card reveal" id="f-live-casino">
+          <div class="top-row"><div class="ic-badge">🎥</div><div class="num">03</div></div>
+          <h3>Live Casino API</h3>
+          <p>Gerçek krupiyerlerle akan görüntü kalitesinde canlı casino deneyimini platformunuza entegre edin.</p>
+        </div>
+
+        <div class="feat-card reveal" id="f-payment">
+          <div class="top-row"><div class="ic-badge">💳</div><div class="num">04</div></div>
+          <h3>Ödeme Sistemi Entegrasyonları</h3>
+          <p>Çoklu ödeme yöntemleriyle hızlı, sorunsuz ve güvenli para yatırma / çekme akışı.</p>
+        </div>
+
+        <div class="feat-card reveal" id="f-user-balance">
+          <div class="top-row"><div class="ic-badge">👤</div><div class="num">05</div></div>
+          <h3>Kullanıcı & Bakiye Yönetimi</h3>
+          <p>Üye hesaplarını, bakiyeleri ve işlem geçmişini tek merkezden yönetin.</p>
+        </div>
+
+        <div class="feat-card reveal" id="f-bonus">
+          <div class="top-row"><div class="ic-badge">🎁</div><div class="num">06</div></div>
+          <h3>Bonus & Promosyon Sistemi</h3>
+          <p>Kural bazlı, tamamen özelleştirilebilir bonus ve kampanya mekanizmaları oluşturun.</p>
+        </div>
+
+        <div class="feat-card reveal" id="f-admin">
+          <div class="top-row"><div class="ic-badge">🖥</div><div class="num">07</div></div>
+          <h3>Detaylı Yönetim Paneli</h3>
+          <p>Platformun tüm işleyişini, kullanıcılarını ve içeriklerini tek bir kontrol panelinden yönetin.</p>
+        </div>
+
+        <div class="feat-card reveal" id="f-reports">
+          <div class="top-row"><div class="ic-badge">📊</div><div class="num">08</div></div>
+          <h3>Detaylı Raporlama Sistemi</h3>
+          <p>Gelir, kullanıcı ve bahis verilerini anlık olarak takip edin, özel raporlar oluşturun.</p>
+        </div>
+
+        <div class="feat-card reveal" id="f-lang">
+          <div class="top-row"><div class="ic-badge">🌐</div><div class="num">09</div></div>
+          <h3>Çoklu Dil Desteği</h3>
+          <p>Platformunuzu hedef kitlenize göre birden fazla dilde sunma imkânı.</p>
+        </div>
+
+        <div class="feat-card reveal" id="f-mobile">
+          <div class="top-row"><div class="ic-badge">📱</div><div class="num">10</div></div>
+          <h3>Mobil Uyumlu Tasarım</h3>
+          <p>Masaüstü, tablet ve mobilde kesintisiz ve tutarlı bir kullanıcı deneyimi.</p>
+        </div>
+
+        <div class="feat-card reveal" id="f-theme">
+          <div class="top-row"><div class="ic-badge">🎨</div><div class="num">11</div></div>
+          <h3>İsteğe Özel Tema</h3>
+          <p>Marka kimliğinize uygun renk, tipografi ve arayüz düzeniyle tamamen özelleştirilebilir tema.</p>
+        </div>
+
+        <div class="feat-card reveal" id="f-anon">
+          <div class="top-row"><div class="ic-badge">🕶</div><div class="num">12</div></div>
+          <h3>Anonim Üye Kaydı Özelliği</h3>
+          <p>Kullanıcıların minimal bilgiyle hızlıca hesap oluşturabildiği kayıt akışı seçeneği.</p>
+        </div>
+
+        <div class="feat-card reveal" id="f-scratch">
+          <div class="top-row"><div class="ic-badge">🎫</div><div class="num">13</div></div>
+          <h3>Kazı Kazan Özellik</h3>
+          <p>Kullanıcı etkileşimini artıran, oyunlaştırılmış kazı-kazan tarzı ödül mekaniği.</p>
+        </div>
+
+        <div class="feat-card reveal" id="f-opensource">
+          <div class="top-row"><div class="ic-badge">💻</div><div class="num">14</div></div>
+          <h3>Açık Kaynak Kod</h3>
+          <p>Kaynak koduna tam erişim ile sınırsız özelleştirme ve bağımsız geliştirme imkânı.</p>
+        </div>
+
+        <div class="feat-card reveal" id="f-license">
+          <div class="top-row"><div class="ic-badge">📜</div><div class="num">15</div></div>
+          <h3>Anjouan Gaming Lisansı Konusunda Destek</h3>
+          <p>Lisanslama süreciniz boyunca danışmanlık ve yönlendirme desteği sağlıyoruz.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- THEME / VALUE -->
+  <section class="theme-sec" id="neden-jex">
+    <div class="wrap theme-grid">
+      <div class="theme-copy reveal">
+        <span class="eyebrow">Yeni Temamızla</span>
+        <h2>Daha modern, hızlı ve kullanıcı odaklı bir deneyim</h2>
+        <p>İhtiyacınıza göre özelleştirilebilen anahtar teslim yazılım altyapımız ile projenizi <mark>kısa sürede</mark> hayata geçirin.</p>
+      </div>
+
+      <div class="value-grid reveal">
+        <div class="value-card">
+          <div class="ic">📱</div>
+          <div class="tt">Mobil Uyumlu</div>
+        </div>
+        <div class="value-card">
+          <div class="ic">🔒</div>
+          <div class="tt">Güvenli Altyapı</div>
+        </div>
+        <div class="value-card">
+          <div class="ic">📊</div>
+          <div class="tt">Yüksek Performans</div>
+        </div>
+        <div class="value-card">
+          <div class="ic">⚙️</div>
+          <div class="tt">Kolay Yönetim</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOGO SHOWCASE -->
+  <section class="logo-sec">
+    <img src="logo.png" alt="JEX Gaming — Betting Solutions. Powering Success." class="reveal">
+  </section>
+
+  <!-- STATS -->
+  <section class="stats">
+    <div class="wrap">
+      <div class="stat-item">
+        <div class="ic">🚀</div>
+        <div>
+          <div class="tt">Hızlı Kurulum</div>
+          <div class="sub">Zaman kaybetmeden hemen başlayın.</div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="ic">🧩</div>
+        <div>
+          <div class="tt">%100 Özelleştirilebilir</div>
+          <div class="sub">İhtiyacınıza uygun esnek yapı.</div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="ic">📈</div>
+        <div>
+          <div class="tt">Detaylı Raporlama</div>
+          <div class="sub">Gelir, kullanıcı ve bahis raporları.</div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="ic">🎧</div>
+        <div>
+          <div class="tt">7/24 Teknik Destek</div>
+          <div class="sub">Uzman ekibimiz her zaman yanınızda.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="iletisim">
+    <div class="wrap">
+      <div class="contact-box reveal">
+        <h2>Detaylı bilgi, demo ve<br>fiyatlandırma için <mark>bizimle iletişime geçin.</mark></h2>
+        <div class="contact-links">
+          <a href="https://www.jexgaming.com" target="_blank" rel="noopener">
+            🌐 <span><span class="lbl">Web Sitesi</span>www.jexgaming.com</span>
+          </a>
+          <a href="https://t.me/jexgaming" target="_blank" rel="noopener">
+            ✈️ <span><span class="lbl">Telegram</span>@jexgaming</span>
+          </a>
+          <a href="mailto:info@jexgaming.com">
+            ✉️ <span><span class="lbl">E-posta</span>info@jexgaming.com</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">JEX Gaming — Betting Solutions. Powering Success.</footer>
+
+<script>
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
+</script>
+
+</body>
+</html>
